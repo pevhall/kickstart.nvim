@@ -3,7 +3,11 @@ require 'custom/helpers/funcs_key_map'
 --" use hybride/relative line numbers {{{ <https://jeffkreeftmeijer.com/vim-number/>
 vim.api.nvim_command 'set number relativenumber'
 vim.api.nvim_create_autocmd({ 'WinEnter', 'FocusGained', 'InsertLeave' }, {
-  command = 'set relativenumber',
+  callback = function()
+    if vim.bo.buftype ~= 'terminal' then
+      vim.o.relativenumber = false
+    end
+  end,
 })
 vim.api.nvim_create_autocmd({ 'WinLeave', 'FocusLost', 'InsertEnter' }, {
   command = 'set norelativenumber',

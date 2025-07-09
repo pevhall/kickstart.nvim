@@ -174,7 +174,7 @@ vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setqflist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -413,6 +413,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sm', builtin.marks, { desc = '[S]earch [M]arks' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
@@ -698,7 +699,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
+      local lspconfig = require 'lspconfig'
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
@@ -709,9 +710,14 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            lspconfig[server_name].setup(server)
           end,
         },
+      }
+      lspconfig.clangd.setup {}
+      lspconfig['vhdl_ls'].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
       }
     end,
   },
