@@ -5,7 +5,7 @@ vim.api.nvim_command 'set number relativenumber'
 vim.api.nvim_create_autocmd({ 'WinEnter', 'FocusGained', 'InsertLeave' }, {
   callback = function()
     if vim.bo.buftype ~= 'terminal' then
-      vim.o.relativenumber = false
+      vim.o.relativenumber = true
     end
   end,
 })
@@ -26,7 +26,6 @@ nm('<Leader>S', 'm`:%s/<C-r>//<C-r><C-w>/g<cr>``', { desc = 'replace search with
 nm('<Leader><a-s>', ':%s/<C-r>//<C-r><C-w>/g', { desc = 'write command to repaced search with cursor word' })
 --find whole words
 nm('<leader>/', '/\\<\\><left><left>', { desc = 'quickly serach for a whole word' })
---
 --" swap word under cursor with word at mark x
 nm('gx', 'm``xyiw``viwp`xviwp``', { desc = 'swap word under cursor with word at mark x' })
 -- first, delete some text. Then, use visual mode to select some other text, and press Ctrl-S. The two pieces of text should then be swapped.
@@ -43,13 +42,9 @@ im('<a-y>', '<c-y>', { desc = 'insert character above cursor' })
 im('<a-e>', '<c-e>', { desc = 'insert character below cursor' })
 --
 -- copy the current file path: {{{
---copy abs file path
 nm('<leader>%', ':let @+=expand("%:p")<CR>', { desc = 'copy file path' })
---"copy file name
 nm('<leader>%t', ':let @+=expand("%:t")<CR>', { desc = 'copy file name' })
---"copy directory
 nm('<leader>%h', ':let @+=expand("%:p:h")<CR>', { desc = 'copy file directory' })
---"copy abs file path and line number
 nm('<leader>%:', ':let @+ = expand("%:p") . ":" . line(".")<CR>', { desc = 'copy <file path>:<line number>' })
 -- }}}
 
@@ -90,6 +85,12 @@ nm('<A-j>', '<C-w>j', { desc = 'Move window to the down' })
 nm('<A-k>', '<C-w>k', { desc = 'Move window to the up' })
 nm('<A-l>', '<C-w>l', { desc = 'Move window to the right' })
 -- }}}
+
+vim.keymap.set({ 'n', 'i' }, 'jk', '<ESC>')
+vim.keymap.set({ 'n', 'i' }, 'kj', '<ESC>')
+vim.keymap.set('t', 'jk', '<C-\\><C-N>')
+vim.keymap.set('t', 'kj', '<C-\\><C-N>')
+vim.keymap.set('v', '<leader>Xb', "y'<P'<O<ESC>'>o<ESC>:<C-u>'<,'>!$SHELL<CR>", { desc = 'Run currently selection through $SHELL paset results below' })
 
 vim.keymap.set('n', '<leader>Xb', 'yy2o<ESC>kpV:!$SHELL<CR>', { desc = 'Run currently line through $SHELL paset results below' })
 vim.keymap.set('v', '<leader>Xb', "y'<P'<O<ESC>'>o<ESC>:<C-u>'<,'>!$SHELL<CR>", { desc = 'Run currently selection through $SHELL paset results below' })
